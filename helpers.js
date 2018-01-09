@@ -25,13 +25,13 @@ const getGeo = (a) => {
 };
 
 // returns a promise that resolves to array of coordinates for each address
-const getGeoPair = (a1, a2) => {
-  let pair = [getGeo(a1), getGeo(a2)];
+const getGeoPair = (add1, add2) => {
+  let pair = [getGeo(add1), getGeo(add2)];
   return Promise.all(pair)
 }
 
 // gets list of Real Estate Agencies based on the given params
-const getPlaces = (location, type = KEYWORD, radius = RANGE) => {
+const getPlacesByLocation = (location, type = KEYWORD, radius = RANGE) => {
   return new Promise(function(resolve, reject) {
     const params = {
       location,
@@ -48,21 +48,47 @@ const getPlaces = (location, type = KEYWORD, radius = RANGE) => {
   });
 };
 
-const pluckIntoSet = (array) => {
-  let newSet = new Set();
-  for(var el of array) {
-    const props = {
-      name: el.name || '',
-      placeId: el.place_id || ''
-    }
-    newSet.add(props);
-  }
-  return newSet;
+//Return object of listIds and name based on provided location
+const getFilteredPlaces = (loc) => {
+  return getPlacesByLocation(loc)
+    .then((places) => {
+      let newPlaces = {};
+      for(let place of places) {
+        newPlaces[place.place_id] = place.name
+      }
+      return newPlaces;
+    })
 }
-module.exports.getPlacesInRange = (address, places, range) => {
+
+// Return array of place_ids within given distance of provided location
+const getIntersectionOfPlaces = (loc1, loc2) => {
+  const pairPlaces = [getFilteredPlaces(loc1), getFilteredPlaces(loc2)]
+  return Promise.all(pairPlaces)
+    .then((filteredPair) => {
+      const intersection = getIntersection(filteredPair[0],filteredPair[1]);
+      return intersection;
+    })
+}
+
+// Get intersection of keys between two objects
+const getIntersection = (obj1, obj2) => {
+  let intersection = [];
+  for(key in obj1) {
+    if(obj2[key]) {
+      intersection.push(key);
+    }
+  }
+  return intersection;
+}
+
+// main function called by the API endPoint
+module.exports.getPlacesInRange = (add1, add2) => {
   return getGeoPair(DUMMY_ADDRESS_0, DUMMY_ADDRESS_1)
     .then((result) => {
       console.log('This is the result', result);
       return result;
+    })
+    .then((result) => {
+      return getIntersectionOfPlaces(result[0],result[1]);
     })
 }
