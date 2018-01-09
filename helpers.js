@@ -35,7 +35,7 @@ const getPlacesByLocation = (location, type = KEYWORD, radius = RANGE) => {
   return new Promise(function(resolve, reject) {
     const params = {
       location,
-      type,
+      keyword: type,
       radius
     }
     gmc.placesNearby(params, (err, result) => {
@@ -48,13 +48,13 @@ const getPlacesByLocation = (location, type = KEYWORD, radius = RANGE) => {
   });
 };
 
-//Return object of listIds and name based on provided location
+//Return object of place_ids and name based on provided location
 const getFilteredPlaces = (loc) => {
   return getPlacesByLocation(loc)
     .then((places) => {
       let newPlaces = {};
       for(let place of places) {
-        newPlaces[place.place_id] = place.name
+        newPlaces[place.place_id] = place
       }
       return newPlaces;
     })
@@ -75,7 +75,7 @@ const getIntersection = (obj1, obj2) => {
   let intersection = [];
   for(key in obj1) {
     if(obj2[key]) {
-      intersection.push(key);
+      intersection.push({[key]: obj2[key]});
     }
   }
   return intersection;
