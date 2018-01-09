@@ -1,0 +1,23 @@
+Ideas -
+
+Use server to host api point for react application
+Use google Distance matrix to find distances between each of the origins and the corresponding dataset that is in question
+
+Will need to format places intersection to be used by the distance matrix calculation
+
+Can possibly add dist_one and dist_two properties to each entry so that the data will be in one place
+
+Can finally finish by using sort method that takes the data by the sum of the distances.
+
+
+Issues -
+
+Using 1 api call for each address to location lookup, 1 for each loc to places lookup,
+and 1 for the distance matrix
+total of 5 calls per request is being used.
+Need to find way to optimize
+
+Current Notes -
+
+Currently implementing distance matrix to return rows containing distances for each
+of the destination entries;
