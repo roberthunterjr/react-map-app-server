@@ -13,7 +13,7 @@ router.get('/testgeo', (req, res) => {
     })
     .catch((err) => {
       console.log('testGeo Failure', err);
-      res.send(err);
+      res.send('There was an error that was encountered');
     })
 })
 

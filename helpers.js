@@ -81,33 +81,69 @@ const getIntersection = (obj1, obj2) => {
   return intersection;
 };
 
-//Creates a hash map of plac_ids => loc coordinates from the intersection hash table
+//Creates an array of objects from the intersection hash table
 /*
-{
-<id> : [<Lat>, <Long>]
-}
-
+[
+  {
+    place_id: <id>,
+    location: [<Lat>,<Lng>]
+  }
+]
 */
-const coordMapFromIntersection = (intersectObj) => {
-  let coordMap = {}
+const coordArrayFromIntersection = (intersectObj) => {
+  let coordArray = []
   for(let place in intersectObj) {
     const location = intersectObj[place].geometry.location;
-    coordMap[place] = [location.lat, location.lng];
+    const params = {
+      place_id: place,
+      location: [location.lat, location.lng]
+    }
+    coordArray.push(params);
   }
-  return coordMap;
+  return coordArray;
 };
+
+const getDistanceMatrix = (origins, destinations) => {
+  return new Promise(function(resolve, reject) {
+    const params = {
+      origins,
+      destinations,
+      units: 'imperial'
+    };
+    return gmc.distanceMatrix(params, (err, results) => {
+      if(!err) {
+        resolve(results.json.rows);
+      }
+      reject(err);
+    })
+  });
+}
 
 // main function called by the API endPoint
 module.exports.getPlacesInRange = (add1, add2) => {
+  let placesObj = {};
   return getGeoPair(DUMMY_ADDRESS_0, DUMMY_ADDRESS_1)
-    .then((result) => {
-      console.log('This is the result', result);
-      return result;
+    .then((locationPair) => {
+      // console.log('This is the location pair', locationPair);
+      placesObj['origins'] = locationPair;
+      return locationPair;
     })
     .then((result) => {
       return getIntersectionOfPlaces(result[0],result[1]);
     })
     .then((intersection) => {
-      return coordMapFromIntersection(intersection);
+      placesObj['intersectMap'] = intersection;
+      return coordArrayFromIntersection(intersection);
+    })
+    .then((coordArray) => {
+      let destinations = [];
+      for(let place of coordArray) {
+        destinations.push(place.location);
+      }
+      placesObj['destinations'] = destinations
+      return destinations;
+    })
+    .then((destinations) => {
+      return getDistanceMatrix(placesObj.origins, placesObj.destinations);
     })
 }

@@ -1,3 +1,7 @@
+MVP -
+
+API endpoint that returns array of place_ids put in order of increasing distance
+
 Ideas -
 
 Use server to host api point for react application
@@ -16,6 +20,12 @@ Using 1 api call for each address to location lookup, 1 for each loc to places l
 and 1 for the distance matrix
 total of 5 calls per request is being used.
 Need to find way to optimize
+
+Distance calculation does not take into account the displacment, which may actually
+be greater than 10 miles in some cases
+
+Need to reifne the results of search as well
+
 
 Current Notes -
 
