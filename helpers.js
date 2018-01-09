@@ -70,16 +70,32 @@ const getIntersectionOfPlaces = (loc1, loc2) => {
     })
 }
 
-// Get intersection of keys between two objects
+// Get intersection hash table of keys mapped to intersecting place_id objects
 const getIntersection = (obj1, obj2) => {
-  let intersection = [];
+  let intersection = {};
   for(key in obj1) {
     if(obj2[key]) {
-      intersection.push({[key]: obj2[key]});
+      intersection[key] = obj2[key];
     }
   }
   return intersection;
+};
+
+//Creates a hash map of plac_ids => loc coordinates from the intersection hash table
+/*
+{
+<id> : [<Lat>, <Long>]
 }
+
+*/
+const coordMapFromIntersection = (intersectObj) => {
+  let coordMap = {}
+  for(let place in intersectObj) {
+    const location = intersectObj[place].geometry.location;
+    coordMap[place] = [location.lat, location.lng];
+  }
+  return coordMap;
+};
 
 // main function called by the API endPoint
 module.exports.getPlacesInRange = (add1, add2) => {
@@ -90,5 +106,8 @@ module.exports.getPlacesInRange = (add1, add2) => {
     })
     .then((result) => {
       return getIntersectionOfPlaces(result[0],result[1]);
+    })
+    .then((intersection) => {
+      return coordMapFromIntersection(intersection);
     })
 }
