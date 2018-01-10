@@ -19,8 +19,13 @@ router.get('/testgeo', (req, res) => {
     });
 });
 
+router.get('/testget', (req, res) => {
+  const bundle = decodeURI(JSON.parse(req.query.bundle));
+  res.status(200).send(bundle);
+})
+
 router.get('/getPlaces', (req, res) => {
-  
+
   console.log(req.query.address);
   res.send(req.query.address);
 })
