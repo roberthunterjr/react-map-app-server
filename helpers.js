@@ -140,6 +140,21 @@ const sortCoordByTotalDistance = (places) => {
   })
 }
 
+//Returns object reference which will point to better formatted array for front endPoint
+
+const finalizeFormat = (places) => {
+  for(let i = 0; i < places.coordArray.length; i++) {
+    let cA = places.coordArray[i];
+    let pIM = places.intersectMap;
+    cA.name = pIM[cA.place_id].name;
+    cA.photos = pIM[cA.place_id].photos;
+    cA.rating = pIM[cA.place_id].rating;
+    cA.vicinity = pIM[cA.place_id].vicinity;
+    cA.types = pIM[cA.place_id].types;
+  }
+  return places.coordArray;
+}
+
 // main function called by the API endPoint
 module.exports.getPlacesInRange = (add1, add2) => {
   let placesObj = {};
@@ -174,5 +189,8 @@ module.exports.getPlacesInRange = (add1, add2) => {
     })
     .then((places) => {
       return sortCoordByTotalDistance(places)
+    })
+    .then((sortedCoordPlaces) => {
+      return finalizeFormat(placesObj);
     })
 }
