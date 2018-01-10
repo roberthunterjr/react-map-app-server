@@ -36,8 +36,10 @@ router.get('/testget', (req, res) => {
   res.status(200).send(bundle);
 })
 
-router.get('/getPlaces', (req, res) => {
+router.post('/getPlaces', (req, res) => {
+  console.log('query bundle', req.body)
   const bundle = JSON.parse(decodeURI(req.query.bundle));
+  console.log('This is the bundle we are getting',bundle);
   helpers.getPlacesInRange(bundle.one, bundle.two)
   .then((result) => {
     res.send(result);
