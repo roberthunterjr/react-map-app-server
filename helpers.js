@@ -158,9 +158,8 @@ const finalizeFormat = (places) => {
 // main function called by the API endPoint
 module.exports.getPlacesInRange = (add1, add2) => {
   let placesObj = {};
-  return getGeoPair(DUMMY_ADDRESS_0, DUMMY_ADDRESS_1)
+  return getGeoPair(add1, add2)
     .then((locationPair) => {
-      // console.log('This is the location pair', locationPair);
       placesObj['origins'] = locationPair;
       return locationPair;
     })

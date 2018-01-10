@@ -16,6 +16,8 @@ Can finally finish by using sort method that takes the data by the sum of the di
 
 Issues -
 
+API KEY MUST BE MOVED AND CHANGED
+
 Using 1 api call for each address to location lookup, 1 for each loc to places lookup,
 and 1 for the distance matrix
 total of 5 calls per request is being used.
