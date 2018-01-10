@@ -103,6 +103,8 @@ const coordArrayFromIntersection = (intersectObj) => {
   return coordArray;
 };
 
+
+// Calculates array of distances based on origins and destinations
 const getDistanceMatrix = (origins, destinations) => {
   return new Promise(function(resolve, reject) {
     const params = {
@@ -117,6 +119,25 @@ const getDistanceMatrix = (origins, destinations) => {
       reject(err);
     })
   });
+}
+
+// Inserts distance information based on location of returned distance rows;
+const insertDistancesToIntersectMap = (places) => {
+  for(let i = 0; i < places.coordArray.length; i++) {
+    let cA = places.coordArray[i];
+    let dA = places.distanceArray;
+    cA['dist_one'] = dA[0].elements[i].distance.value;
+    cA['dist_two'] = dA[1].elements[i].distance.value;
+    cA['dist_sum'] = cA['dist_one'] + cA['dist_two'];
+  }
+  return places;
+}
+
+// Sorts coordArray by total distance
+const sortCoordByTotalDistance = (places) => {
+  return places.coordArray.sort((a, b) => {
+    return a['dist_sum'] - b['dist_sum'];
+  })
 }
 
 // main function called by the API endPoint
@@ -136,6 +157,7 @@ module.exports.getPlacesInRange = (add1, add2) => {
       return coordArrayFromIntersection(intersection);
     })
     .then((coordArray) => {
+      placesObj['coordArray'] = coordArray;
       let destinations = [];
       for(let place of coordArray) {
         destinations.push(place.location);
@@ -145,5 +167,12 @@ module.exports.getPlacesInRange = (add1, add2) => {
     })
     .then((destinations) => {
       return getDistanceMatrix(placesObj.origins, placesObj.destinations);
+    })
+    .then((distancesArray) => {
+      placesObj['distanceArray'] = distancesArray;
+      return insertDistancesToIntersectMap(placesObj);
+    })
+    .then((places) => {
+      return sortCoordByTotalDistance(places)
     })
 }
