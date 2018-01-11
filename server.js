@@ -4,12 +4,15 @@ const bodyParser = require('body-parser');
 
 const port = 3000;
 
+app.listen(port);
 app.use(bodyParser.json());
-app.use('/api',routes);
+app.use(bodyParser.urlencoded({
+  extended: false,
+}));
+
 app.get('/',(req, res) => {
   res.send('You are home');
 });
+app.use('/api',routes);
 
-app.listen(port, () => {
-  console.log('Server listening on',port);
-});
+console.log('Server listening on',port);

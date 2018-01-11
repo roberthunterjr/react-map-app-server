@@ -37,15 +37,13 @@ router.get('/testget', (req, res) => {
 })
 
 router.post('/getPlaces', (req, res) => {
-  console.log('query bundle', req.body)
-  const bundle = JSON.parse(decodeURI(req.query.bundle));
-  console.log('This is the bundle we are getting',bundle);
-  helpers.getPlacesInRange(bundle.one, bundle.two)
+  console.log('This is the request we are getting',req.body);
+  helper.getPlacesInRange(req.body.one, req.body.two)
   .then((result) => {
     res.send(result);
   })
   .catch((err) => {
-    console.log('getGeo failure');
+    console.log('getPlaces failure');
     res.status(404).send('There was an error');
   })
 })
