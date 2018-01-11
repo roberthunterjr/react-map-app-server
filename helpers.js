@@ -1,5 +1,6 @@
+
 const gmc = require('@google/maps').createClient({
-  key: 'AIzaSyDWctL40j8iOM_j2VFUZf9ohONax8exZPs'
+  key: process.env.API_KEY,
 });
 
 const DUMMY_ADDRESS_0 = '6408 Convict Hill Rd, Austin Texas, 78749';

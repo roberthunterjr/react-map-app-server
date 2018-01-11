@@ -1,4 +1,5 @@
 const app = require('express')();
+const dotenv = require('dotenv').config({ path: './env.env' });
 const routes = require('./routes.js');
 const bodyParser = require('body-parser');
 
@@ -15,4 +16,4 @@ app.get('/',(req, res) => {
 });
 app.use('/api',routes);
 
-console.log('Server listening on',port);
+console.log('Server listening on',port,'env',process.env);
